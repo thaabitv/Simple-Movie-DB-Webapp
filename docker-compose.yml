@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build: ./server
+    container_name: movie-library-server
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./server/.env  # Loading environment variables from server/.env file
+    depends_on:
+      - mongo
+
+  client:
+    build: ./client
+    container_name: movie-library-client
+    ports:
+      - '3000:3000'
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:
